@@ -1,0 +1,261 @@
+/* =====================================================
+   PROFILE
+===================================================== */
+
+.user-profile-page {
+  min-height: 100vh;
+  padding: 32px;
+  color: var(--ef-ink, #1c1233);
+  font-family: var(--ef-body, inherit);
+  background:
+    radial-gradient(600px 300px at 95% 0%, rgba(217, 70, 239, 0.10), transparent 70%),
+    var(--ef-bg, #f5f2fb);
+}
+
+.user-profile-page button,
+.user-profile-page input { font-family: inherit; }
+
+/* ---------------- HEADER ---------------- */
+
+.user-profile-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.user-profile-title { display: flex; align-items: center; gap: 10px; color: var(--ef-violet); }
+.user-profile-title h1 { margin: 0; color: var(--ef-ink); font-family: var(--ef-head); font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
+.user-profile-header p { margin: 6px 0 0 33px; color: var(--ef-muted); font-size: 13px; }
+
+.user-logout-top {
+  border: 1px solid #ffcfc7; background: #fff5f3; color: #dc2626;
+  height: 44px; padding: 0 18px; border-radius: 13px;
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+
+.user-logout-top:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+/* ---------------- MESSAGES ---------------- */
+
+.user-profile-success,
+.user-profile-error { padding: 12px 16px; border-radius: 14px; margin-bottom: 16px; font-size: 13px; animation: ef-rise 0.4s both; }
+
+.user-profile-success { background: #e9faf2; border: 1px solid #bfe9d3; color: #0f8a55; }
+.user-profile-error   { background: #fff1f0; border: 1px solid #ffcfc7; color: #c2410c; }
+
+/* ---------------- LAYOUT ---------------- */
+
+.user-profile-layout { display: grid; grid-template-columns: 310px 1fr; gap: 24px; max-width: 1060px; }
+
+/* ---------------- LEFT CARD ---------------- */
+
+.user-profile-card {
+  position: relative; overflow: hidden;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 26px;
+  padding: 58px 24px 28px; text-align: center;
+  box-shadow: var(--ef-shadow);
+  animation: ef-rise 0.6s both;
+}
+
+/* cover banner behind the avatar */
+.user-profile-card::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0; height: 104px;
+  background:
+    linear-gradient(120deg, rgba(76, 29, 149, 0.85), rgba(255, 107, 74, 0.65)),
+    url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=60") center / cover,
+    var(--ef-grad);
+}
+
+.user-avatar-wrapper { width: 108px; height: 108px; margin: 0 auto 16px; position: relative; z-index: 1; }
+
+.user-large-avatar,
+.user-profile-image { width: 108px; height: 108px; border-radius: 50%; }
+
+.user-large-avatar {
+  background: var(--ef-grad); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ef-head); font-size: 40px; font-weight: 700;
+  border: 5px solid #fff; box-shadow: 0 12px 28px rgba(60, 20, 110, 0.25);
+}
+
+.user-profile-image { object-fit: cover; border: 5px solid #fff; box-shadow: 0 12px 28px rgba(60, 20, 110, 0.25); }
+
+.user-camera-button {
+  position: absolute; right: -2px; bottom: 4px;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 3px solid #fff; background: var(--ef-coral); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: 0.25s;
+}
+
+.user-camera-button:hover { transform: scale(1.12) rotate(8deg); }
+
+.user-profile-card h2 { margin: 0 0 8px; font-family: var(--ef-head); font-size: 22px; }
+
+.user-role-badge {
+  display: inline-block; padding: 5px 12px; border-radius: 20px;
+  background: var(--ef-grad-soft); color: var(--ef-violet);
+  font-size: 11px; font-weight: 700;
+}
+
+.user-email {
+  display: flex; justify-content: center; align-items: center; gap: 6px;
+  color: var(--ef-muted); font-size: 12.5px; margin: 14px 0; word-break: break-word;
+}
+
+.account-status {
+  display: flex; justify-content: center; align-items: center; gap: 6px;
+  color: #0f8a55; background: #e3f8ef;
+  padding: 8px 10px; border-radius: 11px;
+  font-size: 12px; font-weight: 600; margin-bottom: 20px;
+}
+
+.user-logout-button {
+  width: 100%; border: 1px solid #ffcfc7; background: #fff5f3; color: #dc2626;
+  height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.25s;
+}
+
+.user-logout-button:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+/* ---------------- RIGHT DETAILS ---------------- */
+
+.user-profile-details {
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 26px;
+  padding: 30px; box-shadow: var(--ef-shadow);
+  animation: ef-rise 0.6s 0.1s both;
+}
+
+.user-details-header { margin-bottom: 12px; }
+.user-details-header h3 { margin: 0; font-family: var(--ef-head); font-size: 19px; }
+.user-details-header p { margin: 4px 0; color: var(--ef-muted); font-size: 12px; }
+
+.user-detail-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px dashed var(--ef-line); }
+.user-detail-row span { color: var(--ef-muted); font-size: 13px; }
+.user-detail-row strong { color: var(--ef-ink); font-size: 14px; }
+
+.user-profile-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+
+.user-primary-button,
+.user-secondary-button {
+  border: none; height: 44px; padding: 0 18px; border-radius: 12px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.25s;
+}
+
+.user-primary-button { background: var(--ef-grad); color: #fff; }
+.user-primary-button:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(192, 38, 211, 0.36); }
+
+.user-secondary-button { background: #f3effa; color: var(--ef-violet); }
+.user-secondary-button:hover { background: var(--ef-violet); color: #fff; transform: translateY(-2px); }
+
+/* ---------------- MODAL ---------------- */
+
+.user-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(28, 18, 51, 0.62); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+
+.user-modal {
+  width: 100%; max-width: 440px; background: #fff; border-radius: 26px; padding: 26px;
+  box-shadow: 0 30px 80px rgba(28, 18, 51, 0.4);
+  animation: userModalIn 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+@keyframes userModalIn { from { opacity: 0; transform: translateY(24px) scale(0.95); } to { opacity: 1; transform: none; } }
+
+.user-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.user-modal-header h3 { margin: 0; font-family: var(--ef-head); font-size: 20px; }
+
+.user-modal-header button {
+  border: none; background: #f3effa; color: var(--ef-text);
+  width: 36px; height: 36px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.user-modal-header button:hover { background: var(--ef-coral); color: #fff; transform: rotate(90deg); }
+
+.user-modal form label { display: block; color: var(--ef-text); font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+
+.user-modal form input {
+  width: 100%; height: 46px; border: 1px solid #ddd5ee; border-radius: 12px;
+  outline: none; padding: 0 13px; margin-bottom: 15px;
+  font-size: 13px; color: var(--ef-ink); transition: 0.25s;
+}
+
+.user-modal form input:focus { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+.user-modal form input:disabled { background: #f6f3fa; color: var(--ef-muted); }
+
+.user-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
+
+.user-cancel-button,
+.user-save-button {
+  border: none; height: 42px; padding: 0 17px; border-radius: 11px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.25s;
+}
+
+.user-cancel-button { background: #f3effa; color: var(--ef-text); }
+.user-cancel-button:hover { background: #e9e2f6; }
+
+.user-save-button { background: var(--ef-grad); color: #fff; }
+.user-save-button:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(192, 38, 211, 0.35); }
+
+/* ---------------- UPLOAD ---------------- */
+
+.user-upload-area {
+  border: 2px dashed #cdbff0; border-radius: 16px; background: #faf7ff;
+  padding: 26px 15px; text-align: center; color: var(--ef-muted); margin-bottom: 18px;
+  transition: 0.25s;
+}
+
+.user-upload-area:hover { border-color: var(--ef-violet-2); background: #f5eeff; }
+.user-upload-area svg { color: var(--ef-violet); margin-bottom: 8px; }
+.user-upload-area p { margin: 0 0 12px; font-size: 13px; }
+
+.user-upload-area input { border: none !important; box-shadow: none !important; height: auto !important; padding: 0 !important; margin: 0 !important; background: transparent; }
+
+.user-upload-area span { display: block; margin-top: 10px; color: var(--ef-violet); font-size: 12px; font-weight: 600; }
+
+/* ---------------- LOADING / ERROR ---------------- */
+
+.profile-loading { min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ef-muted); gap: 10px; }
+.profile-loading svg { color: var(--ef-violet); animation: ef-spin 1.4s linear infinite; }
+
+.profile-error-box {
+  max-width: 500px; margin: 80px auto;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  padding: 36px; text-align: center; box-shadow: var(--ef-shadow);
+}
+
+.profile-error-box svg { color: #dc2626; }
+.profile-error-box h3 { color: var(--ef-ink); font-family: var(--ef-head); margin: 12px 0 5px; }
+.profile-error-box p { color: var(--ef-muted); font-size: 13px; }
+
+.profile-error-box button {
+  border: none; background: var(--ef-grad); color: #fff;
+  height: 42px; padding: 0 20px; border-radius: 12px; font-weight: 700; cursor: pointer;
+}
+
+/* ---------------- FOCUS + MOTION ---------------- */
+
+.user-profile-page button:focus-visible,
+.user-modal button:focus-visible { outline: 2px solid var(--ef-violet-2); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .user-profile-page *, .user-modal { transition: none !important; animation: none !important; }
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 800px) {
+  .user-profile-page { padding: 20px; }
+  .user-profile-layout { grid-template-columns: 1fr; }
+  .user-profile-title h1 { font-size: 24px; }
+}
+
+@media (max-width: 600px) {
+  .user-profile-header { align-items: flex-start; flex-direction: column; gap: 15px; }
+  .user-profile-buttons { flex-direction: column; }
+  .user-primary-button, .user-secondary-button { justify-content: center; }
+  .user-detail-row { align-items: flex-start; flex-direction: column; gap: 5px; }
+}

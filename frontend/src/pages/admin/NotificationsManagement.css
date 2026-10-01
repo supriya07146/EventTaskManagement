@@ -1,0 +1,196 @@
+/* =====================================================
+   NOTIFICATIONS MANAGEMENT   (Notifications.js)
+   Tokens + animations come from adminDashboard.css.
+
+   NOTE: the user panel's notifications.css reuses names like
+   .notifications-header, .notification-icon, .notification-actions
+   and .notification-empty. All rules here are scoped under
+   .notifications-management so the two never collide.
+===================================================== */
+
+.notifications-management { width: 100%; }
+
+.notifications-management button,
+.notifications-management input,
+.notifications-management select { font-family: inherit; }
+
+/* ---------------- HEADER ---------------- */
+
+.notifications-management .notifications-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-bottom: 26px;
+}
+
+.notifications-management .notifications-title { display: flex; align-items: center; gap: 15px; }
+
+/* the Bell icon becomes the gradient tile used on every user page */
+.notifications-management .notifications-title > svg {
+  width: 54px; height: 54px; flex-shrink: 0; padding: 15px; border-radius: 16px;
+  background: var(--ef-grad); color: #fff;
+  box-shadow: 0 10px 24px rgba(192, 38, 211, 0.35);
+}
+
+.notifications-management .notifications-title h1 { margin: 0; font-family: var(--ef-head); font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
+.notifications-management .notifications-title p  { margin: 4px 0 0; color: var(--ef-muted); font-size: 14px; }
+
+.notifications-management .refresh-btn {
+  height: 46px; padding: 0 18px; border: none; border-radius: 14px;
+  background: var(--ef-ink); color: #fff;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+
+.notifications-management .refresh-btn:hover { background: var(--ef-violet); transform: translateY(-2px); }
+.notifications-management .rotate { animation: ef-spin 1s linear infinite; }
+
+/* ---------------- TOOLBAR ---------------- */
+
+.notifications-management .notifications-toolbar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+
+.notifications-management .notification-search {
+  flex: 1; max-width: 540px; height: 48px; padding: 0 16px;
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(60, 20, 110, 0.04);
+  color: var(--ef-muted); transition: 0.25s;
+}
+
+.notifications-management .notification-search:focus-within { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+.notifications-management .notification-search > svg { flex-shrink: 0; }
+
+.notifications-management .notification-search input {
+  width: 100%; border: none; outline: none; background: transparent;
+  color: var(--ef-ink); font-size: 14px;
+}
+
+.notifications-management .notification-search input::placeholder { color: #aaa4bd; }
+
+.notifications-management .notifications-toolbar select {
+  height: 48px; min-width: 200px; padding: 0 14px;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(60, 20, 110, 0.04);
+  color: var(--ef-ink); font-size: 14px; outline: none; cursor: pointer; transition: 0.25s;
+}
+
+.notifications-management .notifications-toolbar select:focus { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+
+/* ---------------- LIST CARD ---------------- */
+
+.notifications-management .notifications-card {
+  overflow: hidden;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  box-shadow: var(--ef-shadow);
+  animation: ef-rise 0.6s both;
+}
+
+.notifications-management .notifications-card-header {
+  padding: 20px 24px;
+  background: #faf7ff; border-bottom: 1px solid var(--ef-line);
+}
+
+.notifications-management .notifications-card-header h2 { margin: 0; font-family: var(--ef-head); font-size: 19px; }
+.notifications-management .notifications-card-header span { display: block; margin-top: 4px; color: var(--ef-muted); font-size: 13px; }
+
+.notifications-management .notification-list { display: flex; flex-direction: column; }
+
+/* ---------------- ROW ---------------- */
+
+.notifications-management .notification-row {
+  position: relative;
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 18px 24px;
+  transition: background 0.2s, transform 0.25s;
+}
+
+.notifications-management .notification-row + .notification-row { border-top: 1px solid var(--ef-line); }
+.notifications-management .notification-row:hover { background: #faf7ff; }
+
+.notifications-management .notification-row.unread { background: linear-gradient(90deg, #faf5ff, #fff 45%); }
+.notifications-management .notification-row.unread:hover { background: linear-gradient(90deg, #f5ecff, #faf7ff 45%); }
+
+.notifications-management .notification-row.unread::before {
+  content: "";
+  position: absolute; left: 0; top: 14px; bottom: 14px; width: 4px;
+  border-radius: 0 4px 4px 0; background: var(--ef-grad);
+}
+
+.notifications-management .notification-icon {
+  width: 46px; height: 46px; min-width: 46px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #6d28d9, #a855f7); color: #fff;
+  font-size: 18px; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.notifications-management .notification-row.read .notification-icon {
+  background: #efecf5; color: #8a84a0; box-shadow: none;
+}
+
+.notifications-management .notification-content { flex: 1; min-width: 0; }
+
+.notifications-management .notification-top { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
+.notifications-management .notification-top h3 { margin: 0; font-family: var(--ef-head); font-size: 16px; font-weight: 600; }
+.notifications-management .notification-row.read .notification-top h3 { color: var(--ef-text); font-weight: 500; }
+
+.notifications-management .new-badge {
+  padding: 3px 8px; border-radius: 10px;
+  background: var(--ef-coral); color: #fff;
+  font-size: 10px; font-weight: 700;
+  animation: ef-pulse 1.8s infinite;
+}
+
+.notifications-management .notification-content > p { margin: 0 0 8px; color: var(--ef-text); font-size: 13.5px; line-height: 1.55; }
+.notifications-management .notification-date { display: block; color: var(--ef-muted); font-size: 11.5px; }
+
+/* ---------------- ACTIONS ---------------- */
+
+.notifications-management .notification-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.notifications-management .notification-actions button {
+  width: 38px; height: 38px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.notifications-management .notification-actions button:not(.delete-btn) { border: none; background: #e3f8ef; color: #0f8a55; }
+.notifications-management .notification-actions button:not(.delete-btn):hover { background: #0f8a55; color: #fff; }
+
+.notifications-management .notification-actions .delete-btn { border: 1px solid var(--ef-line); background: #fff; color: #aaa4bd; }
+.notifications-management .notification-actions .delete-btn:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+/* ---------------- EMPTY / LOADING ---------------- */
+
+.notifications-management .notification-empty {
+  min-height: 280px; padding: 40px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  background: none; border: none; border-radius: 0;
+  color: var(--ef-muted); font-size: 14px;
+}
+
+.notifications-management .notification-empty > svg {
+  width: 72px; height: 72px; margin-bottom: 14px; padding: 20px; border-radius: 50%;
+  background: var(--ef-grad-soft); color: var(--ef-violet);
+}
+
+.notifications-management .notification-empty h3 { margin: 0 0 5px; color: var(--ef-ink); font-family: var(--ef-head); font-size: 19px; }
+.notifications-management .notification-empty p  { margin: 0; font-size: 13px; }
+
+/* ---------------- FOCUS ---------------- */
+
+.notifications-management button:focus-visible { outline: 2px solid var(--ef-violet-2); outline-offset: 2px; }
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 768px) {
+  .notifications-management .notifications-header { align-items: flex-start; }
+  .notifications-management .notifications-title h1 { font-size: 24px; }
+  .notifications-management .notifications-title > svg { width: 46px; height: 46px; padding: 12px; }
+  .notifications-management .refresh-btn { width: 46px; padding: 0; justify-content: center; font-size: 0; }
+  .notifications-management .refresh-btn svg { font-size: 15px; }
+  .notifications-management .notifications-toolbar { flex-direction: column; align-items: stretch; }
+  .notifications-management .notification-search { max-width: none; }
+  .notifications-management .notifications-toolbar select { width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .notifications-management .notification-row { padding: 16px; gap: 12px; }
+  .notifications-management .notification-actions { flex-direction: column; }
+}

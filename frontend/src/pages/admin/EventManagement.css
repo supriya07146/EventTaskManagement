@@ -1,0 +1,344 @@
+/* =====================================================
+   EVENTS MANAGEMENT   (EventsManagement.js)
+   Tokens (--ef-*), animations (ef-rise, ef-fade, ef-modal-in,
+   ef-spin) and shared pieces (.module-header, .primary-button,
+   .secondary-button, .modal-actions) come from adminDashboard.css.
+
+   Every rule is scoped to .events-management so the generic
+   class names used in this module (.table-card, .modal-overlay,
+   .loading ...) cannot clash with other admin modules.
+
+   REQUIRED: in EventsManagement.js change the root element to
+       <div className="module-page events-management">
+===================================================== */
+
+.events-management { width: 100%; }
+
+.events-management button,
+.events-management input,
+.events-management select,
+.events-management textarea { font-family: inherit; }
+
+/* ---------------- ERROR MESSAGE ---------------- */
+
+.events-management .module-error {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px; margin-bottom: 18px; border-radius: 14px;
+  background: #fff1f0; border: 1px solid #ffcfc7; color: #c2410c;
+  font-size: 13px; animation: ef-rise 0.4s both;
+}
+
+.events-management .module-error::before {
+  content: "!"; width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #c2410c; color: #fff; font-size: 12px; font-weight: 700;
+}
+
+/* ---------------- TOOLBAR ---------------- */
+
+.events-management .module-toolbar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+  padding: 14px; margin-bottom: 18px;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(60, 20, 110, 0.04);
+}
+
+.events-management .module-toolbar input,
+.events-management .module-toolbar select {
+  height: 46px; border: 1px solid #e4def2; border-radius: 12px; outline: none;
+  background-color: #fff; color: var(--ef-ink); font-size: 14px; transition: 0.25s;
+}
+
+/* search box with built-in magnifier icon */
+.events-management .module-toolbar input {
+  flex: 1; min-width: 220px; padding: 0 14px 0 42px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 14px center;
+}
+
+.events-management .module-toolbar select {
+  min-width: 160px; padding: 0 14px; color: var(--ef-text); cursor: pointer;
+}
+
+.events-management .module-toolbar input::placeholder { color: #aaa4bd; }
+
+.events-management .module-toolbar input:focus,
+.events-management .module-toolbar select:focus {
+  border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14);
+}
+
+/* ---------------- LOADING ---------------- */
+
+.events-management .loading {
+  min-height: 300px; padding: 40px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  box-shadow: var(--ef-shadow); color: var(--ef-muted); font-size: 14px;
+}
+
+.events-management .loading::before {
+  content: ""; width: 38px; height: 38px; border-radius: 50%;
+  border: 4px solid #eadcff; border-top-color: var(--ef-coral);
+  animation: ef-spin 0.8s linear infinite;
+}
+
+/* ---------------- EMPTY STATE ---------------- */
+
+.events-management .empty-state {
+  min-height: 340px; padding: 40px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.09), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(244, 114, 182, 0.10), transparent 40%),
+    #fff;
+  border: 1px dashed #d9cdf2; border-radius: 24px;
+  color: var(--ef-muted); animation: ef-rise 0.5s both;
+}
+
+.events-management .empty-icon {
+  width: 84px; height: 84px; margin-bottom: 18px; border-radius: 26px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ef-grad-soft); font-size: 38px;
+  box-shadow: 0 12px 28px rgba(139, 92, 246, 0.18);
+  animation: ev-float 3.2s ease-in-out infinite;
+}
+
+.events-management .empty-state h3 { margin: 0 0 6px; color: var(--ef-ink); font-family: var(--ef-head); font-size: 20px; }
+.events-management .empty-state p  { margin: 0 0 22px; max-width: 320px; font-size: 13.5px; line-height: 1.6; }
+
+@keyframes ev-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* ---------------- TABLE ---------------- */
+
+.events-management .table-card {
+  overflow-x: auto;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  box-shadow: var(--ef-shadow);
+  animation: ef-rise 0.6s both;
+}
+
+.events-management .table-card table { width: 100%; min-width: 960px; border-collapse: collapse; }
+
+.events-management .table-card th {
+  padding: 16px 20px; text-align: left; white-space: nowrap;
+  background: #faf7ff; border-bottom: 1px solid var(--ef-line);
+  color: var(--ef-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+}
+
+.events-management .table-card td {
+  padding: 16px 20px; vertical-align: middle;
+  border-bottom: 1px solid var(--ef-line);
+  color: var(--ef-text); font-size: 13.5px; transition: background 0.2s;
+}
+
+.events-management .table-card tbody tr:last-child td { border-bottom: none; }
+.events-management .table-card tbody tr:hover td { background: #faf7ff; }
+
+/* event title + description cell */
+.events-management .table-card td:first-child { position: relative; min-width: 240px; }
+
+.events-management .table-card td:first-child strong {
+  display: block; color: var(--ef-ink); font-size: 14px; font-weight: 600;
+}
+
+.events-management .table-card td small {
+  display: block; max-width: 320px; margin-top: 3px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--ef-muted); font-size: 12.5px;
+}
+
+/* accent bar that grows in when a row is hovered */
+.events-management .table-card tbody tr td:first-child::before {
+  content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px;
+  border-radius: 0 3px 3px 0; background: var(--ef-grad);
+  transform: scaleY(0); transition: transform 0.25s;
+}
+
+.events-management .table-card tbody tr:hover td:first-child::before { transform: scaleY(1); }
+
+.events-management .table-card td:nth-child(3),
+.events-management .table-card td:nth-child(4) { white-space: nowrap; }
+
+.events-management .table-card td:nth-child(5) { font-weight: 600; color: var(--ef-ink); }
+
+/* ---------------- STATUS BADGES ---------------- */
+
+.events-management .status-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 12px; border-radius: 20px;
+  background: #efecf5; color: #766f8c;
+  font-size: 11px; font-weight: 700; text-transform: capitalize; white-space: nowrap;
+}
+
+.events-management .status-badge::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+.events-management .status-badge.upcoming  { background: #e6f0ff; color: #2563eb; }
+.events-management .status-badge.ongoing   { background: #e3f8ef; color: #0f8a55; }
+.events-management .status-badge.completed { background: #f1e9ff; color: #6d28d9; }
+.events-management .status-badge.cancelled { background: #ffe8e6; color: #d1383a; }
+
+/* the one live signal on the page: ongoing events pulse */
+.events-management .status-badge.ongoing::before { animation: ev-pulse 1.6s ease-out infinite; }
+
+@keyframes ev-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(15, 138, 85, 0.5); }
+  100% { box-shadow: 0 0 0 8px rgba(15, 138, 85, 0); }
+}
+
+/* ---------------- ROW ACTIONS ---------------- */
+
+.events-management .action-buttons { display: flex; gap: 8px; }
+
+.events-management .edit-button,
+.events-management .delete-button {
+  height: 36px; padding: 0 14px; border-radius: 10px;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12.5px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+
+.events-management .edit-button::before,
+.events-management .delete-button::before {
+  content: ""; width: 14px; height: 14px; background: currentColor;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: contain; mask-size: contain;
+}
+
+.events-management .edit-button::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E");
+}
+
+.events-management .delete-button::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3C/svg%3E");
+}
+
+.events-management .edit-button   { border: 1px solid #ddd5ee; background: #fff; color: var(--ef-violet); }
+.events-management .edit-button:hover { background: var(--ef-grad-soft); border-color: var(--ef-violet-2); }
+
+.events-management .delete-button { border: 1px solid #ffcfc7; background: #fff5f3; color: #dc2626; }
+.events-management .delete-button:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+/* ---------------- MODAL ---------------- */
+
+.events-management .modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: rgba(28, 18, 51, 0.62); backdrop-filter: blur(6px);
+  animation: ef-fade 0.2s both;
+}
+
+.events-management .event-modal {
+  width: 100%; max-width: 640px; max-height: 92vh; overflow-y: auto;
+  background: #fff; border-radius: 26px;
+  box-shadow: 0 30px 80px rgba(28, 18, 51, 0.4);
+  animation: ef-modal-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.events-management .modal-header {
+  position: relative; overflow: hidden;
+  padding: 24px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  color: #fff; background: var(--ef-grad);
+}
+
+/* decorative glow shapes inside the header */
+.events-management .modal-header::before,
+.events-management .modal-header::after {
+  content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.events-management .modal-header::before { width: 160px; height: 160px; top: -70px; right: 50px; }
+.events-management .modal-header::after  { width: 90px;  height: 90px;  bottom: -45px; right: -20px; }
+
+.events-management .modal-header > * { position: relative; z-index: 1; }
+
+.events-management .modal-header h2 { margin: 0; font-family: var(--ef-head); font-size: 21px; font-weight: 700; }
+.events-management .modal-header p  { margin: 5px 0 0; color: rgba(255, 255, 255, 0.85); font-size: 13px; }
+
+.events-management .close-button {
+  width: 36px; height: 36px; flex-shrink: 0; border: none; border-radius: 11px;
+  background: rgba(255, 255, 255, 0.2); color: #fff; font-size: 22px; line-height: 1;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.events-management .close-button:hover { background: rgba(255, 255, 255, 0.4); transform: rotate(90deg); }
+
+.events-management .event-modal form { padding: 24px; }
+
+/* ---------------- FORM ---------------- */
+
+.events-management .form-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+}
+
+.events-management .form-group { min-width: 0; }
+.events-management .form-group.full { grid-column: 1 / -1; }
+
+.events-management .form-group label {
+  display: block; margin-bottom: 7px; color: var(--ef-text); font-size: 13px; font-weight: 600;
+}
+
+.events-management .form-group input,
+.events-management .form-group select,
+.events-management .form-group textarea {
+  width: 100%; padding: 0 14px;
+  border: 1px solid #ddd5ee; border-radius: 12px; outline: none;
+  background: #fff; color: var(--ef-ink); font-size: 14px; transition: 0.25s;
+}
+
+.events-management .form-group input,
+.events-management .form-group select { height: 48px; }
+
+.events-management .form-group select { cursor: pointer; }
+
+.events-management .form-group textarea {
+  min-height: 110px; padding: 12px 14px; line-height: 1.5; resize: vertical;
+}
+
+.events-management .form-group input:focus,
+.events-management .form-group select:focus,
+.events-management .form-group textarea:focus {
+  border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14);
+}
+
+.events-management .form-group input::placeholder,
+.events-management .form-group textarea::placeholder { color: #aaa4bd; }
+
+.events-management .event-modal .modal-actions { margin-top: 24px; }
+
+/* ---------------- FOCUS ---------------- */
+
+.events-management button:focus-visible { outline: 2px solid var(--ef-violet-2); outline-offset: 2px; }
+
+/* ---------------- REDUCED MOTION ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .events-management .empty-icon,
+  .events-management .status-badge.ongoing::before { animation: none; }
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 768px) {
+  .events-management .module-toolbar { flex-direction: column; align-items: stretch; }
+  .events-management .module-toolbar input,
+  .events-management .module-toolbar select { width: 100%; min-width: 0; }
+}
+
+@media (max-width: 560px) {
+  .events-management .form-grid { grid-template-columns: 1fr; gap: 14px; }
+}
+
+@media (max-width: 480px) {
+  .events-management .modal-header { padding: 18px; }
+  .events-management .event-modal form { padding: 18px; }
+  .events-management .event-modal .modal-actions { flex-direction: column-reverse; }
+  .events-management .event-modal .modal-actions button { width: 100%; }
+}

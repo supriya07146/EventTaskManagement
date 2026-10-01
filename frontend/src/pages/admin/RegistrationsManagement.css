@@ -1,0 +1,346 @@
+/* =====================================================
+   REGISTRATIONS MANAGEMENT   (RegistrationsManagement.js)
+   Tokens + animations come from adminDashboard.css.
+
+   NOTE: the user panel's events.css also defines
+   .registration-modal-overlay / .registration-modal-header /
+   .registration-status ... Every rule below is scoped under
+   .registrations-management (higher specificity) and sets the
+   full set of properties, so nothing from the user CSS leaks in.
+===================================================== */
+
+.registrations-management { width: 100%; }
+
+.registrations-management button,
+.registrations-management input,
+.registrations-management select { font-family: inherit; }
+
+/* ---------------- HEADER ---------------- */
+
+.registrations-management .registration-module-header { margin-bottom: 26px; }
+
+.registrations-management .registration-module-header h1 {
+  margin: 0; font-family: var(--ef-head); font-size: 30px; font-weight: 700; letter-spacing: -0.5px;
+}
+
+.registrations-management .registration-module-header p { margin: 4px 0 0; color: var(--ef-muted); font-size: 14px; }
+
+/* ---------------- MESSAGES ---------------- */
+
+.registrations-management .registration-success-message,
+.registrations-management .registration-error-message {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 13px 16px; margin-bottom: 18px; border-radius: 14px;
+  font-size: 13px; animation: ef-rise 0.4s both;
+}
+
+.registrations-management .registration-success-message { background: #e9faf2; border: 1px solid #bfe9d3; color: #0f8a55; }
+.registrations-management .registration-error-message   { background: #fff1f0; border: 1px solid #ffcfc7; color: #c2410c; }
+
+.registrations-management .registration-success-message button,
+.registrations-management .registration-error-message button {
+  border: none; background: transparent; color: inherit;
+  font-size: 20px; line-height: 1; cursor: pointer; opacity: 0.7; transition: 0.25s;
+}
+
+.registrations-management .registration-success-message button:hover,
+.registrations-management .registration-error-message button:hover { opacity: 1; }
+
+/* ---------------- TOOLBAR ---------------- */
+
+.registrations-management .registrations-toolbar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+  padding: 14px; margin-bottom: 18px;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(60, 20, 110, 0.04);
+}
+
+.registrations-management .registrations-search {
+  flex: 1 1 240px; min-width: 220px; height: 46px; padding: 0 14px;
+  display: flex; align-items: center; gap: 10px;
+  border: 1px solid #e4def2; border-radius: 12px; color: var(--ef-muted);
+  transition: 0.25s;
+}
+
+.registrations-management .registrations-search:focus-within { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+.registrations-management .registrations-search > svg { flex-shrink: 0; }
+
+.registrations-management .registrations-search input {
+  flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+  color: var(--ef-ink); font-size: 14px;
+}
+
+.registrations-management .registrations-search input::placeholder { color: #aaa4bd; }
+
+.registrations-management .clear-registration-search {
+  width: 26px; height: 26px; flex-shrink: 0; border: none; border-radius: 50%;
+  background: #f3effa; color: var(--ef-text);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .clear-registration-search:hover { background: var(--ef-coral); color: #fff; }
+
+.registrations-management .registration-filter {
+  height: 46px; min-width: 150px; max-width: 220px; padding: 0 14px;
+  border: 1px solid #e4def2; border-radius: 12px;
+  background: #fff; color: var(--ef-text); font-size: 14px; outline: none; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .registration-filter:focus { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+
+.registrations-management .refresh-registration-button {
+  width: 46px; height: 46px; flex-shrink: 0;
+  border: 1px solid var(--ef-line); border-radius: 14px;
+  background: #fff; color: var(--ef-text);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .refresh-registration-button:hover { background: var(--ef-grad-soft); color: var(--ef-violet); transform: translateY(-2px); box-shadow: var(--ef-shadow); }
+
+.registrations-management .clear-filters-button {
+  height: 46px; padding: 0 18px;
+  border: 1px solid #ffcfc7; border-radius: 12px;
+  background: #fff5f3; color: #dc2626;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .clear-filters-button:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+.registrations-management .registration-result-info { margin-bottom: 14px; color: var(--ef-muted); font-size: 13px; }
+.registrations-management .registration-result-info strong { color: var(--ef-violet); }
+
+/* ---------------- TABLE CARD ---------------- */
+
+.registrations-management .registration-table-card {
+  overflow: hidden;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  box-shadow: var(--ef-shadow);
+  animation: ef-rise 0.6s both;
+}
+
+.registrations-management .registration-table-wrapper { overflow-x: auto; }
+.registrations-management .registration-table { width: 100%; min-width: 860px; border-collapse: collapse; }
+
+.registrations-management .registration-table th {
+  padding: 16px 20px; text-align: left; white-space: nowrap;
+  background: #faf7ff; border-bottom: 1px solid var(--ef-line);
+  color: var(--ef-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+}
+
+.registrations-management .registration-table th:first-child,
+.registrations-management .registration-table td:first-child { width: 60px; color: var(--ef-muted); font-weight: 600; }
+
+.registrations-management .registration-table td {
+  padding: 16px 20px; vertical-align: middle;
+  border-bottom: 1px solid var(--ef-line);
+  color: var(--ef-text); font-size: 13.5px; transition: background 0.2s;
+}
+
+.registrations-management .registration-table tbody tr:last-child td { border-bottom: none; }
+.registrations-management .registration-table tbody tr:hover td { background: #faf7ff; }
+
+.registrations-management .registration-user-cell { display: flex; align-items: center; gap: 12px; }
+.registrations-management .registration-user-cell > div:last-child { min-width: 0; }
+.registrations-management .registration-user-cell strong { display: block; color: var(--ef-ink); font-size: 14px; font-weight: 600; }
+.registrations-management .registration-user-cell small  { display: block; margin-top: 2px; color: var(--ef-muted); font-size: 12px; }
+
+.registrations-management .registration-user-icon {
+  width: 38px; height: 38px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ef-grad); color: #fff;
+}
+
+.registrations-management .registration-event-cell { display: flex; align-items: center; gap: 9px; color: var(--ef-ink); font-weight: 500; }
+.registrations-management .registration-event-cell > svg { flex-shrink: 0; color: var(--ef-coral); }
+
+/* status badge (class names come from getStatusBadge) */
+.registrations-management .registration-status {
+  display: inline-block; padding: 6px 12px; border-radius: 20px;
+  background: #efecf5; color: #766f8c;
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+
+.registrations-management .registration-status.pending   { background: #fff4d6; color: #b77900; }
+.registrations-management .registration-status.approved  { background: #e3f8ef; color: #0f8a55; }
+.registrations-management .registration-status.rejected  { background: #ffe8e6; color: #d1383a; }
+.registrations-management .registration-status.cancelled { background: #efecf5; color: #766f8c; }
+
+.registrations-management .registration-actions { display: flex; gap: 8px; }
+
+.registrations-management .registration-view-button,
+.registrations-management .registration-status-button {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .registration-view-button   { border: 1px solid #ddd5ee; background: #fff; color: var(--ef-violet); }
+.registrations-management .registration-view-button:hover { background: var(--ef-grad-soft); border-color: var(--ef-violet-2); }
+
+.registrations-management .registration-status-button { border: 1px solid #bfe9d3; background: #e9faf2; color: #0f8a55; }
+.registrations-management .registration-status-button:hover { background: #0f8a55; color: #fff; border-color: #0f8a55; }
+
+/* ---------------- LOADING / EMPTY ---------------- */
+
+.registrations-management .registration-loading,
+.registrations-management .registration-empty {
+  min-height: 300px; padding: 40px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  color: var(--ef-muted);
+}
+
+.registrations-management .registration-loading p { margin: 12px 0 0; font-size: 14px; }
+
+.registrations-management .registration-spinner {
+  width: 38px; height: 38px;
+  border: 4px solid #eadcff; border-top-color: var(--ef-coral);
+  border-radius: 50%; animation: ef-spin 0.8s linear infinite;
+}
+
+.registrations-management .registration-empty-icon {
+  width: 70px; height: 70px; margin-bottom: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ef-grad-soft); color: var(--ef-violet);
+}
+
+.registrations-management .registration-empty h3 { margin: 0 0 6px; color: var(--ef-ink); font-family: var(--ef-head); font-size: 19px; }
+.registrations-management .registration-empty p  { margin: 0; font-size: 13.5px; }
+
+/* ---------------- PAGINATION ---------------- */
+
+.registrations-management .registration-pagination {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  padding: 16px; background: #faf7ff; border-top: 1px solid var(--ef-line);
+  color: var(--ef-muted); font-size: 13px;
+}
+
+.registrations-management .registration-pagination strong { color: var(--ef-violet); }
+
+.registrations-management .registration-pagination button {
+  height: 38px; padding: 0 16px;
+  border: 1px solid #ddd5ee; border-radius: 11px;
+  background: #fff; color: var(--ef-violet);
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .registration-pagination button:hover:not(:disabled) { background: var(--ef-violet); color: #fff; border-color: var(--ef-violet); }
+.registrations-management .registration-pagination button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---------------- MODALS ---------------- */
+
+.registrations-management .registration-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: rgba(28, 18, 51, 0.62); backdrop-filter: blur(6px);
+  animation: ef-fade 0.2s both;
+}
+
+.registrations-management .registration-details-modal,
+.registrations-management .registration-status-modal {
+  width: 100%; max-height: 92vh; overflow-y: auto;
+  background: #fff; border-radius: 26px;
+  box-shadow: 0 30px 80px rgba(28, 18, 51, 0.4);
+  animation: ef-modal-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.registrations-management .registration-details-modal { max-width: 560px; }
+.registrations-management .registration-status-modal  { max-width: 460px; }
+
+.registrations-management .registration-modal-header {
+  padding: 22px 24px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  color: #fff; background: var(--ef-grad);
+}
+
+/* neutralise the user-panel rule: .registration-modal-header > div:first-child { display:flex } */
+.registrations-management .registration-modal-header > div:first-child { display: block; }
+
+.registrations-management .registration-modal-header h2 { margin: 0; font-family: var(--ef-head); font-size: 21px; font-weight: 700; }
+.registrations-management .registration-modal-header p  { margin: 5px 0 0; color: rgba(255, 255, 255, 0.85); font-size: 13px; }
+
+.registrations-management .registration-close-button {
+  width: 36px; height: 36px; flex-shrink: 0; border: none; border-radius: 11px;
+  background: rgba(255, 255, 255, 0.2); color: #fff;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .registration-close-button:hover { background: rgba(255, 255, 255, 0.4); transform: rotate(90deg); }
+.registrations-management .registration-close-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* details */
+
+.registrations-management .registration-detail-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+  padding: 24px 24px 8px;
+}
+
+.registrations-management .registration-detail-item {
+  min-width: 0; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  background: #faf7ff; border: 1px solid var(--ef-line); border-radius: 14px;
+}
+
+.registrations-management .registration-detail-item > span { color: var(--ef-muted); font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.registrations-management .registration-detail-item strong { color: var(--ef-ink); font-size: 14px; font-weight: 600; word-break: break-word; }
+
+/* status modal */
+
+.registrations-management .status-registration-info {
+  margin: 22px 24px 0; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 4px;
+  background: #faf7ff; border: 1px solid var(--ef-line); border-radius: 14px;
+}
+
+.registrations-management .status-registration-info strong { color: var(--ef-ink); font-size: 14px; font-weight: 600; }
+.registrations-management .status-registration-info span   { color: var(--ef-muted); font-size: 13px; }
+
+.registrations-management .registration-form-group { margin: 18px 24px 0; }
+.registrations-management .registration-form-group label { display: block; margin-bottom: 7px; color: var(--ef-text); font-size: 13px; font-weight: 600; }
+
+.registrations-management .registration-form-group select {
+  width: 100%; height: 48px; padding: 0 14px;
+  border: 1px solid #ddd5ee; border-radius: 12px;
+  background: #fff; color: var(--ef-ink); font-size: 14px; outline: none; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .registration-form-group select:focus { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+
+/* modal buttons */
+
+.registrations-management .registration-modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 24px; }
+
+.registrations-management .primary-registration-button,
+.registrations-management .secondary-registration-button {
+  height: 46px; padding: 0 20px; border-radius: 14px;
+  font-size: 14px; white-space: nowrap; cursor: pointer; transition: 0.25s;
+}
+
+.registrations-management .primary-registration-button { border: none; background: var(--ef-grad); color: #fff; font-weight: 700; }
+.registrations-management .primary-registration-button:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(192, 38, 211, 0.38); }
+.registrations-management .primary-registration-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.registrations-management .secondary-registration-button { border: 1px solid #ddd5ee; background: #fff; color: var(--ef-text); font-weight: 600; }
+.registrations-management .secondary-registration-button:hover { background: #faf7ff; border-color: var(--ef-violet-2); color: var(--ef-violet); }
+.registrations-management .secondary-registration-button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ---------------- FOCUS ---------------- */
+
+.registrations-management button:focus-visible { outline: 2px solid var(--ef-violet-2); outline-offset: 2px; }
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 768px) {
+  .registrations-management .registration-module-header h1 { font-size: 24px; }
+  .registrations-management .registrations-toolbar { flex-direction: column; align-items: stretch; }
+  .registrations-management .registration-filter { max-width: none; width: 100%; }
+  .registrations-management .refresh-registration-button,
+  .registrations-management .clear-filters-button { width: 100%; }
+}
+
+@media (max-width: 560px) {
+  .registrations-management .registration-detail-grid { grid-template-columns: 1fr; padding: 18px 18px 4px; }
+  .registrations-management .registration-modal-header { padding: 18px; }
+  .registrations-management .status-registration-info { margin: 18px 18px 0; }
+  .registrations-management .registration-form-group { margin: 16px 18px 0; }
+  .registrations-management .registration-modal-actions { padding: 18px; flex-direction: column-reverse; }
+  .registrations-management .registration-modal-actions button { width: 100%; }
+}

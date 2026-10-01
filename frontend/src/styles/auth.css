@@ -1,0 +1,293 @@
+/* =====================================================
+   AUTH PAGES
+   Login.js, Register.js, ForgotPassword.js,
+   VerifyOTP.js, ResetPassword.js   (all import auth.css)
+
+   Self-contained: tokens are defined on .auth-page, so this
+   file works without adminDashboard.css. Same violet ->
+   magenta -> coral palette as the dashboards.
+===================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap");
+
+.auth-page {
+  --au-ink: #1c1233;
+  --au-text: #4a4363;
+  --au-muted: #7a7391;
+  --au-line: #ddd5ee;
+  --au-violet: #6d28d9;
+  --au-violet-2: #8b5cf6;
+  --au-magenta: #c026d3;
+  --au-coral: #fb7185;
+  --au-grad: linear-gradient(135deg, #6d28d9 0%, #c026d3 58%, #fb7185 100%);
+  --au-head: "Sora", "Plus Jakarta Sans", system-ui, sans-serif;
+
+  position: relative; overflow: hidden;
+  min-height: 100vh; padding: 32px 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--au-text);
+  background:
+    radial-gradient(rgba(109, 40, 217, 0.13) 1px, transparent 1.6px) 0 0 / 26px 26px,
+    linear-gradient(160deg, #f7f3ff 0%, #fdf2f8 60%, #fff7ed 100%);
+}
+
+.auth-page *,
+.auth-page *::before,
+.auth-page *::after { box-sizing: border-box; }
+
+.auth-page button,
+.auth-page input { font-family: inherit; }
+
+/* ---------------- BACKGROUND GLOW (moves slowly) ---------------- */
+
+.auth-page::before,
+.auth-page::after {
+  content: ""; position: absolute; z-index: 0; pointer-events: none;
+  width: 560px; height: 560px; border-radius: 50%; filter: blur(8px);
+}
+
+.auth-page::before {
+  top: -190px; left: -150px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.50), transparent 66%);
+  animation: au-drift 16s ease-in-out infinite;
+}
+
+.auth-page::after {
+  bottom: -220px; right: -160px;
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.45), transparent 66%);
+  animation: au-drift 19s ease-in-out infinite reverse;
+}
+
+@keyframes au-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(60px, 40px) scale(1.12); }
+}
+
+/* ---------------- CARD ---------------- */
+
+.auth-card {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 450px; padding: 38px 36px 32px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(60, 20, 110, 0.18), 0 2px 0 rgba(255, 255, 255, 0.8) inset;
+  backdrop-filter: blur(14px);
+  animation: au-rise 0.65s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+/* thin gradient edge on top of the card */
+.auth-card::before {
+  content: ""; position: absolute; top: 0; left: 36px; right: 36px; height: 4px;
+  border-radius: 0 0 6px 6px; background: var(--au-grad);
+}
+
+@keyframes au-rise {
+  from { opacity: 0; transform: translateY(26px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------------- LOGO + HEADINGS ---------------- */
+
+.auth-logo {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 24px;
+  color: var(--au-ink); font-family: var(--au-head); font-size: 21px; font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-logo span {
+  width: 40px; height: 40px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--au-grad); color: #fff; font-size: 15px; font-weight: 800;
+  box-shadow: 0 8px 20px rgba(192, 38, 211, 0.35);
+  transition: transform 0.3s;
+}
+
+.auth-logo:hover span { transform: rotate(-8deg) scale(1.06); }
+
+.auth-card h1 {
+  margin: 0 0 8px; text-align: center;
+  color: var(--au-ink); font-family: var(--au-head); font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
+}
+
+.auth-subtitle {
+  margin: 0 0 24px; text-align: center;
+  color: var(--au-muted); font-size: 14px; line-height: 1.65;
+}
+
+/* ---------------- ERRORS ---------------- */
+
+.auth-card .form-error {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px; padding: 12px 14px; border-radius: 12px;
+  background: #fff1f0; border: 1px solid #ffcfc7; color: #c2410c;
+  font-size: 13px; line-height: 1.5; animation: au-shake 0.4s both;
+}
+
+.auth-card .form-error::before {
+  content: "!"; width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #c2410c; color: #fff; font-size: 12px; font-weight: 700;
+}
+
+.auth-card .field-error {
+  display: block; margin-top: 6px; color: #dc2626; font-size: 12.5px; font-weight: 500;
+}
+
+/* Forgot-password and OTP pages show the same message in the banner
+   and under the field; keep only the banner there. */
+.auth-card .general-error ~ form .field-error { display: none; }
+
+@keyframes au-shake {
+  0%   { opacity: 0; transform: translateX(-6px); }
+  40%  { transform: translateX(5px); }
+  70%  { transform: translateX(-3px); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* ---------------- FORM FIELDS ---------------- */
+
+.auth-card .input-group { margin-bottom: 18px; }
+
+.auth-card .input-group > label {
+  display: block; margin-bottom: 7px; color: var(--au-text); font-size: 13px; font-weight: 600;
+}
+
+.auth-card .input-group input[type="text"],
+.auth-card .input-group input[type="email"],
+.auth-card .input-group input[type="password"] {
+  width: 100%; height: 50px; padding: 0 16px;
+  border: 1px solid var(--au-line); border-radius: 13px; outline: none;
+  background: #fff; color: var(--au-ink); font-size: 14.5px; transition: 0.25s;
+}
+
+.auth-card .input-group input::placeholder { color: #aaa4bd; }
+
+.auth-card .input-group input:focus {
+  border-color: var(--au-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+}
+
+/* red outline on a field that has an error under it */
+.auth-card .input-group:has(.field-error) input[type="text"],
+.auth-card .input-group:has(.field-error) input[type="email"],
+.auth-card .input-group:has(.field-error) input[type="password"] { border-color: #f4a7a0; }
+
+/* password show / hide */
+.auth-card .password-wrapper { position: relative; }
+.auth-card .password-wrapper input { padding-right: 52px !important; }
+
+.auth-card .password-toggle {
+  position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+  width: 36px; height: 36px; border: none; border-radius: 10px;
+  background: transparent; color: var(--au-muted); font-size: 16px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+}
+
+.auth-card .password-toggle:hover { background: #f3effa; color: var(--au-violet); }
+
+/* ---------------- PANEL (USER / ADMIN) ---------------- */
+
+.auth-card .role-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+.auth-card .role-option { position: relative; display: block; margin: 0; cursor: pointer; }
+
+.auth-card .role-option input {
+  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer;
+}
+
+.auth-card .role-option span {
+  height: 46px; border: 1px solid var(--au-line); border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; color: var(--au-text); font-size: 14px; font-weight: 600; transition: 0.25s;
+}
+
+.auth-card .role-option:hover span { border-color: var(--au-violet-2); background: #faf7ff; }
+
+.auth-card .role-option input:checked + span {
+  border-color: transparent; background: var(--au-grad); color: #fff;
+  box-shadow: 0 8px 20px rgba(192, 38, 211, 0.3);
+}
+
+.auth-card .role-option input:focus-visible + span { outline: 2px solid var(--au-violet-2); outline-offset: 2px; }
+
+/* ---------------- FORGOT PASSWORD LINK ---------------- */
+
+.auth-card .forgot-password { margin: -4px 0 20px; text-align: right; }
+
+.auth-card .forgot-password a {
+  color: var(--au-violet); font-size: 13px; font-weight: 600; text-decoration: none;
+}
+
+.auth-card .forgot-password a:hover { text-decoration: underline; }
+
+/* ---------------- MAIN BUTTON ---------------- */
+
+.auth-button {
+  position: relative; overflow: hidden;
+  width: 100%; height: 52px; border: none; border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--au-grad); color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.2px;
+  box-shadow: 0 12px 28px rgba(192, 38, 211, 0.32);
+  cursor: pointer; transition: transform 0.25s, box-shadow 0.25s;
+}
+
+/* light sweep on hover */
+.auth-button::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-20deg); transition: left 0.6s;
+}
+
+.auth-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(192, 38, 211, 0.4); }
+.auth-button:hover:not(:disabled)::after { left: 130%; }
+.auth-button:active:not(:disabled) { transform: translateY(0); }
+
+/* disabled = request in progress, so show a spinner */
+.auth-button:disabled { opacity: 0.8; cursor: not-allowed; }
+
+.auth-button:disabled::before {
+  content: ""; width: 16px; height: 16px; margin-right: 10px; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.45); border-top-color: #fff;
+  animation: au-spin 0.7s linear infinite;
+}
+
+@keyframes au-spin { to { transform: rotate(360deg); } }
+
+/* ---------------- FOOTER LINK ---------------- */
+
+.auth-footer { margin: 24px 0 0; text-align: center; color: var(--au-muted); font-size: 14px; }
+
+.auth-footer a { color: var(--au-violet); font-weight: 700; text-decoration: none; }
+.auth-footer a:hover { text-decoration: underline; }
+
+/* ---------------- OTP INPUT (VerifyOTP.js) ---------------- */
+
+.auth-card input[inputmode="numeric"] {
+  height: 58px !important; text-align: center;
+  font-family: var(--au-head); font-size: 24px !important; font-weight: 700; letter-spacing: 0.5em;
+}
+
+.auth-card input[inputmode="numeric"]::placeholder {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0;
+}
+
+/* ---------------- FOCUS ---------------- */
+
+.auth-page a:focus-visible,
+.auth-page button:focus-visible { outline: 2px solid var(--au-violet-2); outline-offset: 2px; }
+
+/* ---------------- REDUCED MOTION ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-page::before, .auth-page::after, .auth-card, .auth-card .form-error { animation: none; }
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 480px) {
+  .auth-page { padding: 18px 14px; align-items: flex-start; }
+  .auth-card { padding: 30px 22px 26px; border-radius: 24px; }
+  .auth-card::before { left: 22px; right: 22px; }
+  .auth-card h1 { font-size: 23px; }
+}

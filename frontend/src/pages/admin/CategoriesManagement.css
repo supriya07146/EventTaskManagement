@@ -1,0 +1,284 @@
+/* =====================================================
+   CATEGORIES MANAGEMENT   (CategoriesManagement.js)
+   Shared pieces (.module-header, .primary-button,
+   .secondary-button, .delete-confirm-button, .modal-actions,
+   tokens, animations) come from adminDashboard.css.
+===================================================== */
+
+.categories-management { width: 100%; }
+
+.categories-management button,
+.categories-management input,
+.categories-management textarea { font-family: inherit; }
+
+/* ---------------- MESSAGES ---------------- */
+
+.categories-management .category-success-message,
+.categories-management .category-error-message {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 13px 16px; margin-bottom: 18px; border-radius: 14px;
+  font-size: 13px; animation: ef-rise 0.4s both;
+}
+
+.categories-management .category-success-message { background: #e9faf2; border: 1px solid #bfe9d3; color: #0f8a55; }
+.categories-management .category-error-message   { background: #fff1f0; border: 1px solid #ffcfc7; color: #c2410c; }
+
+.categories-management .category-success-message button,
+.categories-management .category-error-message button {
+  border: none; background: transparent; color: inherit;
+  font-size: 20px; line-height: 1; cursor: pointer; opacity: 0.7; transition: 0.25s;
+}
+
+.categories-management .category-success-message button:hover,
+.categories-management .category-error-message button:hover { opacity: 1; }
+
+/* ---------------- TOOLBAR ---------------- */
+
+.categories-management .categories-toolbar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+  padding: 14px; margin-bottom: 18px;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(60, 20, 110, 0.04);
+}
+
+.categories-management .categories-search {
+  flex: 1; min-width: 220px; height: 46px; padding: 0 14px;
+  display: flex; align-items: center; gap: 10px;
+  border: 1px solid #e4def2; border-radius: 12px; color: var(--ef-muted);
+  transition: 0.25s;
+}
+
+.categories-management .categories-search:focus-within { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+.categories-management .categories-search > svg { flex-shrink: 0; }
+
+.categories-management .categories-search input {
+  flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+  color: var(--ef-ink); font-size: 14px;
+}
+
+.categories-management .categories-search input::placeholder { color: #aaa4bd; }
+
+.categories-management .clear-category-search {
+  width: 26px; height: 26px; flex-shrink: 0; border: none; border-radius: 50%;
+  background: #f3effa; color: var(--ef-text);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.categories-management .clear-category-search:hover { background: var(--ef-coral); color: #fff; }
+
+.categories-management .refresh-category-button {
+  width: 46px; height: 46px; flex-shrink: 0;
+  border: 1px solid var(--ef-line); border-radius: 14px;
+  background: #fff; color: var(--ef-text);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.categories-management .refresh-category-button:hover { background: var(--ef-grad-soft); color: var(--ef-violet); transform: translateY(-2px); box-shadow: var(--ef-shadow); }
+
+.categories-management .category-result-info { margin-bottom: 14px; color: var(--ef-muted); font-size: 13px; }
+.categories-management .category-result-info strong { color: var(--ef-violet); }
+
+/* ---------------- TABLE CARD ---------------- */
+
+.categories-management .category-table-card {
+  overflow: hidden;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  box-shadow: var(--ef-shadow);
+  animation: ef-rise 0.6s both;
+}
+
+.categories-management .category-table-wrapper { overflow-x: auto; }
+.categories-management .category-table { width: 100%; min-width: 720px; border-collapse: collapse; }
+
+.categories-management .category-table th {
+  padding: 16px 20px; text-align: left; white-space: nowrap;
+  background: #faf7ff; border-bottom: 1px solid var(--ef-line);
+  color: var(--ef-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+}
+
+.categories-management .category-table th:first-child,
+.categories-management .category-table td:first-child { width: 60px; color: var(--ef-muted); font-weight: 600; }
+
+.categories-management .category-table td {
+  padding: 16px 20px; vertical-align: middle;
+  border-bottom: 1px solid var(--ef-line);
+  color: var(--ef-text); font-size: 13.5px; transition: background 0.2s;
+}
+
+.categories-management .category-table tbody tr:last-child td { border-bottom: none; }
+.categories-management .category-table tbody tr:hover td { background: #faf7ff; }
+
+.categories-management .category-name-cell { display: flex; align-items: center; gap: 12px; }
+.categories-management .category-name-cell strong { color: var(--ef-ink); font-size: 14px; font-weight: 600; }
+
+.categories-management .category-icon {
+  width: 38px; height: 38px; flex-shrink: 0; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ef-grad-soft); color: var(--ef-violet);
+}
+
+.categories-management .category-description {
+  display: block; max-width: 380px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--ef-muted); font-size: 13px;
+}
+
+.categories-management .category-actions { display: flex; gap: 8px; }
+
+.categories-management .category-edit-button,
+.categories-management .category-delete-button {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.categories-management .category-edit-button   { border: 1px solid #ddd5ee; background: #fff; color: var(--ef-violet); }
+.categories-management .category-edit-button:hover { background: var(--ef-grad-soft); border-color: var(--ef-violet-2); }
+
+.categories-management .category-delete-button { border: 1px solid #ffcfc7; background: #fff5f3; color: #dc2626; }
+.categories-management .category-delete-button:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+/* ---------------- LOADING / EMPTY ---------------- */
+
+.categories-management .category-loading,
+.categories-management .category-empty {
+  min-height: 300px; padding: 40px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  color: var(--ef-muted);
+}
+
+.categories-management .category-loading p { margin: 12px 0 0; font-size: 14px; }
+
+.categories-management .category-spinner {
+  width: 38px; height: 38px;
+  border: 4px solid #eadcff; border-top-color: var(--ef-coral);
+  border-radius: 50%; animation: ef-spin 0.8s linear infinite;
+}
+
+.categories-management .category-empty-icon {
+  width: 70px; height: 70px; margin-bottom: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ef-grad-soft); color: var(--ef-violet);
+}
+
+.categories-management .category-empty h3 { margin: 0 0 6px; color: var(--ef-ink); font-family: var(--ef-head); font-size: 19px; }
+.categories-management .category-empty p  { margin: 0 0 20px; font-size: 13.5px; }
+
+/* ---------------- PAGINATION ---------------- */
+
+.categories-management .category-pagination {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  padding: 16px; background: #faf7ff; border-top: 1px solid var(--ef-line);
+  color: var(--ef-muted); font-size: 13px;
+}
+
+.categories-management .category-pagination strong { color: var(--ef-violet); }
+
+.categories-management .category-pagination button {
+  height: 38px; padding: 0 16px;
+  border: 1px solid #ddd5ee; border-radius: 11px;
+  background: #fff; color: var(--ef-violet);
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+
+.categories-management .category-pagination button:hover:not(:disabled) { background: var(--ef-violet); color: #fff; border-color: var(--ef-violet); }
+.categories-management .category-pagination button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---------------- MODALS ---------------- */
+
+.categories-management .category-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: rgba(28, 18, 51, 0.62); backdrop-filter: blur(6px);
+  animation: ef-fade 0.2s both;
+}
+
+.categories-management .category-modal,
+.categories-management .category-delete-modal {
+  width: 100%; max-height: 92vh; overflow-y: auto;
+  background: #fff; border-radius: 26px;
+  box-shadow: 0 30px 80px rgba(28, 18, 51, 0.4);
+  animation: ef-modal-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.categories-management .category-modal { max-width: 500px; }
+
+.categories-management .category-modal-header {
+  padding: 22px 24px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  color: #fff; background: var(--ef-grad);
+}
+
+.categories-management .category-modal-header h2 { margin: 0; font-family: var(--ef-head); font-size: 21px; font-weight: 700; }
+.categories-management .category-modal-header p  { margin: 5px 0 0; color: rgba(255, 255, 255, 0.85); font-size: 13px; }
+
+.categories-management .category-close-button {
+  width: 36px; height: 36px; flex-shrink: 0; border: none; border-radius: 11px;
+  background: rgba(255, 255, 255, 0.2); color: #fff;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.25s;
+}
+
+.categories-management .category-close-button:hover { background: rgba(255, 255, 255, 0.4); transform: rotate(90deg); }
+.categories-management .category-close-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.categories-management .category-modal form { padding: 24px; }
+
+.categories-management .category-form-group { margin-bottom: 16px; }
+
+.categories-management .category-form-group label { display: block; margin-bottom: 7px; color: var(--ef-text); font-size: 13px; font-weight: 600; }
+
+.categories-management .category-form-group input,
+.categories-management .category-form-group textarea {
+  width: 100%; padding: 0 14px;
+  border: 1px solid #ddd5ee; border-radius: 12px; outline: none;
+  background: #fff; color: var(--ef-ink); font-size: 14px; transition: 0.25s;
+}
+
+.categories-management .category-form-group input { height: 48px; }
+.categories-management .category-form-group textarea { min-height: 110px; padding: 12px 14px; line-height: 1.5; resize: vertical; }
+
+.categories-management .category-form-group input:focus,
+.categories-management .category-form-group textarea:focus { border-color: var(--ef-violet-2); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.14); }
+
+.categories-management .category-form-group input::placeholder,
+.categories-management .category-form-group textarea::placeholder { color: #aaa4bd; }
+
+.categories-management .category-form-error {
+  margin-bottom: 16px; padding: 11px 13px; border-radius: 10px;
+  background: #fff1f0; border: 1px solid #ffcfc7; color: #c2410c; font-size: 13px;
+}
+
+.categories-management .category-modal .modal-actions { margin-top: 8px; }
+
+/* delete confirmation */
+
+.categories-management .category-delete-modal { max-width: 420px; padding: 34px 28px 28px; text-align: center; }
+
+.categories-management .category-delete-icon {
+  width: 60px; height: 60px; margin: 0 auto 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #ffe8e6; color: #dc2626;
+}
+
+.categories-management .category-delete-modal h2 { margin: 0 0 8px; font-family: var(--ef-head); font-size: 21px; }
+.categories-management .category-delete-modal p  { margin: 0 0 24px; color: var(--ef-muted); font-size: 14px; line-height: 1.65; }
+.categories-management .category-delete-modal p strong { color: var(--ef-ink); }
+.categories-management .category-delete-modal .modal-actions { justify-content: center; }
+
+/* ---------------- FOCUS ---------------- */
+
+.categories-management button:focus-visible { outline: 2px solid var(--ef-violet-2); outline-offset: 2px; }
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 768px) {
+  .categories-management .categories-toolbar { flex-direction: column; align-items: stretch; }
+  .categories-management .refresh-category-button,
+  .categories-management .categories-toolbar .primary-button { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .categories-management .category-modal-header { padding: 18px; }
+  .categories-management .category-modal form { padding: 18px; }
+  .categories-management .category-modal .modal-actions { flex-direction: column-reverse; }
+  .categories-management .category-modal .modal-actions button { width: 100%; }
+}
