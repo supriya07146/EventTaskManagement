@@ -8,10 +8,12 @@ import {
   Trash2,
   CheckCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  CalendarDays
 } from "lucide-react";
 
 import "../../styles/adminDashboard.css";
+import "./TaskManagement.css";
 
 const TASKS_API = "http://127.0.0.1:8000/api/tasks/";
 const USERS_API = "http://127.0.0.1:8000/api/users/";
@@ -738,11 +740,11 @@ function TasksManagement() {
 
       {/* TABLE */}
 
-      <div className="tasks-table-card">
+      <div className="tasks-cards-area">
 
         {loading ? (
 
-          <div className="tasks-message">
+          <div className="cm-state">
 
             <div className="loading-spinner"></div>
 
@@ -754,9 +756,9 @@ function TasksManagement() {
 
         ) : filteredTasks.length === 0 ? (
 
-          <div className="tasks-message">
+          <div className="cm-state">
 
-            <div className="empty-task-icon">
+            <div className="cm-state-icon">
               <CheckSquareIcon />
             </div>
 
@@ -789,176 +791,110 @@ function TasksManagement() {
         ) : (
 
           <>
-            <div className="tasks-table-wrapper">
+            <div className="cm-grid">
 
-              <table className="tasks-table">
+              {currentTasks.map((task, index) => {
 
-                <thead>
-                  <tr>
+                const userName = getUserName(task.assigned_to);
 
-                    <th>Task</th>
+                const priority = (task.priority || "").toLowerCase();
 
-                    <th>Assigned To</th>
+                const statusClass = (task.status || "")
+                  .toLowerCase()
+                  .replace(/\s+/g, "-");
 
-                    <th>Due Date</th>
+                const grad =
+                  priority === "high"
+                    ? "grad-1"
+                    : priority === "low"
+                      ? "grad-2"
+                      : "grad-0";
 
-                    <th>Priority</th>
+                return (
 
-                    <th>Status</th>
+                  <div
+                    className="cm-card"
+                    key={task.id}
+                    style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
+                  >
 
-                    <th>Actions</th>
+                    <div className={`cm-media ${grad}`}>
 
-                  </tr>
-                </thead>
+                      <span className="cm-tag">
+                        {task.priority || "No"} priority
+                      </span>
 
+                      <span className={`cm-badge ${statusClass}`}>
+                        {task.status}
+                      </span>
 
-                <tbody>
+                      <div className="cm-glyph">
+                        {task.status === "Completed" ? (
+                          <CheckCircle size={30} />
+                        ) : task.status === "In Progress" ? (
+                          <Clock size={30} />
+                        ) : (
+                          <AlertCircle size={30} />
+                        )}
+                      </div>
 
-                  {currentTasks.map((task) => {
+                    </div>
 
-                    const userName =
-                      getUserName(
-                        task.assigned_to
-                      );
+                    <div className="cm-body">
 
-                    return (
-                      <tr key={task.id}>
+                      <h3 title={task.title}>{task.title}</h3>
 
-                        {/* TASK */}
+                      <p className="cm-sub">
+                        {task.description || "No description added."}
+                      </p>
 
-                        <td>
-
-                          <div className="task-title-cell">
-
-                            <strong>
-                              {task.title}
-                            </strong>
-
-                            {task.description && (
-                              <span>
-                                {task.description}
-                              </span>
-                            )}
-
-                          </div>
-
-                        </td>
-
-
-                        {/* USER */}
-
-                        <td>
-
-                          <div className="task-user-cell">
-
-                            <div className="task-avatar">
-                              {getInitial(
-                                userName
-                              )}
-                            </div>
-
-                            <span>
-                              {userName}
-                            </span>
-
-                          </div>
-
-                        </td>
-
-
-                        {/* DATE */}
-
-                        <td>
-                          {task.due_date
-                            ? task.due_date
-                            : "No due date"}
-                        </td>
-
-
-                        {/* PRIORITY */}
-
-                        <td>
-
-                          <span
-                            className={`task-priority-badge ${task.priority?.toLowerCase()}`}
-                          >
-                            {task.priority}
+                      <ul className="cm-meta">
+                        <li>
+                          <span className="cm-mini-avatar">
+                            {getInitial(userName)}
                           </span>
+                          <span>{userName}</span>
+                        </li>
+                        <li>
+                          <CalendarDays size={16} />
+                          <span>{task.due_date ? task.due_date : "No due date"}</span>
+                        </li>
+                      </ul>
 
-                        </td>
+                      <div className="cm-actions">
 
+                        <button
+                          className="cm-btn edit"
+                          title="Edit task"
+                          onClick={() => openEditModal(task)}
+                        >
+                          <Edit size={15} /> Edit
+                        </button>
 
-                        {/* STATUS */}
+                        <button
+                          className="cm-btn delete"
+                          title="Delete task"
+                          onClick={() => openDeleteModal(task)}
+                        >
+                          <Trash2 size={15} /> Delete
+                        </button>
 
-                        <td>
+                      </div>
 
-                          <span
-                            className={`task-status-badge ${task.status
-                              ?.toLowerCase()
-                              .replace(
-                                " ",
-                                "-"
-                              )}`}
-                          >
+                    </div>
 
-                            {getStatusIcon(
-                              task.status
-                            )}
+                  </div>
 
-                            {task.status}
+                );
 
-                          </span>
-
-                        </td>
-
-
-                        {/* ACTIONS */}
-
-                        <td>
-
-                          <div className="task-row-actions">
-
-                            <button
-                              className="task-edit-button"
-                              onClick={() =>
-                                openEditModal(task)
-                              }
-                              title="Edit task"
-                            >
-                              <Edit size={15} />
-                            </button>
-
-                            <button
-                              className="task-delete-button"
-                              onClick={() =>
-                                openDeleteModal(
-                                  task
-                                )
-                              }
-                              title="Delete task"
-                            >
-                              <Trash2 size={15} />
-                            </button>
-
-                          </div>
-
-                        </td>
-
-                      </tr>
-                    );
-                  })}
-
-                </tbody>
-
-              </table>
+              })}
 
             </div>
-
 
             {/* PAGINATION */}
 
             {totalPages > 1 && (
-              <div className="tasks-pagination">
+              <div className="cm-pagination">
 
                 <button
                   disabled={currentPage === 1}

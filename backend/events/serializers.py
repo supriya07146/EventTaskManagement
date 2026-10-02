@@ -21,6 +21,7 @@ class EventSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
             "capacity",
+            "image",
             "status",
             "created_by",
             "created_by_name",

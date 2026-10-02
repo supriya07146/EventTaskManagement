@@ -1,0 +1,195 @@
+/* =====================================================
+   TASKS MANAGEMENT - card layout   (TasksManagement.js)
+   Import AFTER adminDashboard.css (already done in the JS).
+   Tokens + animations (--ef-*, ef-rise) come from adminDashboard.css.
+===================================================== */
+
+.tasks-management-page button { font-family: inherit; }
+.tasks-management-page button:focus-visible { outline: 2px solid var(--ef-violet-2); outline-offset: 2px; }
+
+/* =====================================================
+   CARD LAYOUT  (same look + animation as Events cards)
+===================================================== */
+
+.tasks-management-page .cm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+
+.tasks-management-page .cm-card {
+  display: flex; flex-direction: column; overflow: hidden;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  box-shadow: var(--ef-shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: ef-rise 0.6s both;
+}
+.tasks-management-page .cm-card:hover { transform: translateY(-6px); box-shadow: var(--ef-shadow-lg); }
+
+/* gradient header */
+.tasks-management-page .cm-media {
+  position: relative; height: 138px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.tasks-management-page .cm-media.grad-0 { background: linear-gradient(135deg, #6d28d9 0%, #c026d3 100%); }
+.tasks-management-page .cm-media.grad-1 { background: linear-gradient(135deg, #ff6b4a 0%, #f97316 45%, #db2777 100%); }
+.tasks-management-page .cm-media.grad-2 { background: linear-gradient(135deg, #12b5a6 0%, #2dd4bf 50%, #3b82f6 100%); }
+.tasks-management-page .cm-media.grad-off { background: linear-gradient(135deg, #9a94b0 0%, #6b6585 100%); }
+
+.tasks-management-page .cm-media::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.28), transparent 42%),
+    radial-gradient(circle at 8% 100%, rgba(255, 255, 255, 0.16), transparent 40%);
+  transition: transform 0.6s;
+}
+.tasks-management-page .cm-card:hover .cm-media::before { transform: scale(1.25); }
+
+.tasks-management-page .cm-media::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(28, 18, 51, 0) 55%, rgba(28, 18, 51, 0.3) 100%);
+}
+
+.tasks-management-page .cm-glyph {
+  position: relative; z-index: 1;
+  width: 68px; height: 68px; border-radius: 22px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(4px); color: #fff;
+  box-shadow: 0 10px 22px rgba(28, 18, 51, 0.22);
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+.tasks-management-page .cm-card:hover .cm-glyph { transform: scale(1.1) rotate(-5deg); }
+
+.tasks-management-page .cm-avatar {
+  position: relative; z-index: 1;
+  width: 78px; height: 78px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; color: var(--ef-violet); border: 4px solid rgba(255, 255, 255, 0.55);
+  background-clip: padding-box;
+  box-shadow: 0 12px 26px rgba(28, 18, 51, 0.25);
+  font-family: var(--ef-head); font-size: 30px; font-weight: 700;
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+.tasks-management-page .cm-card:hover .cm-avatar { transform: scale(1.1); }
+
+/* status pill (top right) + tag (top left) */
+.tasks-management-page .cm-badge {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px; border-radius: 20px;
+  background: rgba(255, 255, 255, 0.95); color: #6d28d9;
+  box-shadow: 0 4px 12px rgba(28, 18, 51, 0.18);
+  font-size: 12px; font-weight: 700; text-transform: capitalize; white-space: nowrap;
+}
+.tasks-management-page .cm-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+.tasks-management-page .cm-badge.active, .tasks-management-page .cm-badge.approved, .tasks-management-page .cm-badge.completed { color: #0f8a55; --pulse: rgba(15, 138, 85, 0.5); }
+.tasks-management-page .cm-badge.inactive, .tasks-management-page .cm-badge.rejected { color: #d1383a; }
+.tasks-management-page .cm-badge.pending { color: #b77900; }
+.tasks-management-page .cm-badge.in-progress { color: #2563eb; --pulse: rgba(37, 99, 235, 0.5); }
+.tasks-management-page .cm-badge.cancelled { color: #6b6585; }
+
+/* live signal: active / in-progress dots pulse */
+.tasks-management-page .cm-badge.active::before, .tasks-management-page .cm-badge.in-progress::before { animation: cm-pulse 1.6s ease-out infinite; }
+@keyframes cm-pulse {
+  0%   { box-shadow: 0 0 0 0 var(--pulse, transparent); }
+  100% { box-shadow: 0 0 0 8px transparent; }
+}
+
+.tasks-management-page .cm-tag {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  padding: 6px 12px; border-radius: 20px;
+  background: rgba(28, 18, 51, 0.32); backdrop-filter: blur(6px); color: #fff;
+  font-size: 11.5px; font-weight: 700; text-transform: capitalize; letter-spacing: 0.2px; white-space: nowrap;
+}
+
+/* body */
+.tasks-management-page .cm-body { flex: 1; display: flex; flex-direction: column; padding: 20px 22px 22px; }
+
+.tasks-management-page .cm-body h3 {
+  margin: 0 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--ef-ink); font-family: var(--ef-head); font-size: 19px; font-weight: 700;
+}
+
+.tasks-management-page .cm-sub {
+  margin: 0 0 16px; min-height: 40px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  color: var(--ef-muted); font-size: 13.5px; line-height: 1.55; word-break: break-word;
+}
+
+.tasks-management-page .cm-meta {
+  list-style: none; margin: 0 0 18px; padding: 14px 0 0;
+  border-top: 1px dashed #e4def2;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.tasks-management-page .cm-meta li { display: flex; align-items: center; gap: 11px; color: var(--ef-text); font-size: 13.5px; }
+.tasks-management-page .cm-meta li > svg { flex-shrink: 0; color: var(--ef-coral); }
+.tasks-management-page .cm-meta li > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.tasks-management-page .cm-mini-avatar {
+  width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--ef-grad); color: #fff; font-size: 11px; font-weight: 700;
+}
+.tasks-management-page .cm-meta li > .cm-mini-avatar { overflow: visible; }
+
+/* actions */
+.tasks-management-page .cm-actions { display: flex; gap: 8px; margin-top: auto; }
+
+.tasks-management-page .cm-btn {
+  flex: 1; height: 40px; padding: 0 10px; border-radius: 11px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 12.5px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.25s;
+}
+.tasks-management-page .cm-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.tasks-management-page .cm-btn.edit, .tasks-management-page .cm-btn.view { border: 1px solid #ddd5ee; background: #fff; color: var(--ef-violet); }
+.tasks-management-page .cm-btn.edit:hover, .tasks-management-page .cm-btn.view:hover { background: var(--ef-grad-soft); border-color: var(--ef-violet-2); transform: translateY(-2px); }
+
+.tasks-management-page .cm-btn.delete { border: 1px solid #ffcfc7; background: #fff5f3; color: #dc2626; }
+.tasks-management-page .cm-btn.delete:hover { background: #dc2626; color: #fff; border-color: #dc2626; transform: translateY(-2px); }
+
+.tasks-management-page .cm-btn.warn { border: 1px solid #f6dd9a; background: #fff8e1; color: #b77900; }
+.tasks-management-page .cm-btn.warn:hover:not(:disabled) { background: #f59e0b; color: #fff; border-color: #f59e0b; transform: translateY(-2px); }
+
+.tasks-management-page .cm-btn.ok { border: 1px solid #bfe9d3; background: #e9faf2; color: #0f8a55; }
+.tasks-management-page .cm-btn.ok:hover:not(:disabled) { background: #0f8a55; color: #fff; border-color: #0f8a55; transform: translateY(-2px); }
+
+/* loading / empty / pagination for the card pages */
+.tasks-management-page .cm-state {
+  min-height: 300px; padding: 40px 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 24px;
+  box-shadow: var(--ef-shadow); color: var(--ef-muted);
+  animation: ef-rise 0.6s both;
+}
+.tasks-management-page .cm-state p { margin: 12px 0 0; font-size: 14px; }
+.tasks-management-page .cm-state h3 { margin: 0 0 6px; color: var(--ef-ink); font-family: var(--ef-head); font-size: 19px; }
+.tasks-management-page .cm-state-icon {
+  width: 70px; height: 70px; margin-bottom: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ef-grad-soft); color: var(--ef-violet);
+  animation: cm-float 3s ease-in-out infinite;
+}
+.tasks-management-page .cm-state .primary-button { margin-top: 20px; }
+@keyframes cm-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+.tasks-management-page .cm-pagination {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-top: 24px; padding: 14px;
+  background: #fff; border: 1px solid var(--ef-line); border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(60, 20, 110, 0.04);
+  color: var(--ef-muted); font-size: 13px;
+}
+.tasks-management-page .cm-pagination strong { color: var(--ef-violet); }
+.tasks-management-page .cm-pagination button {
+  height: 38px; padding: 0 16px; border: 1px solid #ddd5ee; border-radius: 11px;
+  background: #fff; color: var(--ef-violet); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+.tasks-management-page .cm-pagination button:hover:not(:disabled) { background: var(--ef-violet); color: #fff; border-color: var(--ef-violet); }
+.tasks-management-page .cm-pagination button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+@media (max-width: 480px) {
+  .tasks-management-page .cm-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tasks-management-page .cm-card, .tasks-management-page .cm-state, .tasks-management-page .cm-state-icon { animation: none; }
+  .tasks-management-page .cm-badge::before { animation: none; }
+}

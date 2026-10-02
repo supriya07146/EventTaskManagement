@@ -9,7 +9,10 @@ import {
   Edit,
   UserX,
   UserCheck,
-  Trash2
+  Trash2,
+  Mail,
+  CalendarDays,
+  Hash
 } from "lucide-react";
 
 import ModulePage from "../../components/admin/ModulePage";
@@ -862,207 +865,103 @@ function UsersManagement() {
 
           <>
 
-            <div className="users-table-container">
+            <div className="cm-grid">
 
-              <table className="users-table">
+              {currentUsers.map((item, index) => (
 
-                <thead>
+                <div
+                  className="cm-card"
+                  key={item.id}
+                  style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
+                >
 
-                  <tr>
+                  <div
+                    className={`cm-media ${
+                      !item.is_active
+                        ? "grad-off"
+                        : item.role === "admin"
+                          ? "grad-0"
+                          : "grad-2"
+                    }`}
+                  >
 
-                    <th>ID</th>
+                    <span className="cm-tag">{item.role}</span>
 
-                    <th>User</th>
+                    <span
+                      className={`cm-badge ${
+                        item.is_active ? "active" : "inactive"
+                      }`}
+                    >
+                      {item.is_active ? "Active" : "Inactive"}
+                    </span>
 
-                    <th>Email</th>
+                    <div className="cm-avatar">
+                      {getInitial(item.full_name)}
+                    </div>
 
-                    <th>Role</th>
+                  </div>
 
-                    <th>Status</th>
+                  <div className="cm-body">
 
-                    <th>Created</th>
+                    <h3 title={item.full_name}>{item.full_name}</h3>
 
-                    <th>Actions</th>
+                    <p className="cm-sub">{item.email}</p>
 
-                  </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                  {currentUsers.map((item) => (
-
-                    <tr key={item.id}>
-
-                      {/* ID */}
-
-                      <td>
-                        #{item.id}
-                      </td>
-
-
-                      {/* USER */}
-
-                      <td>
-
-                        <div className="table-user">
-
-                          <div className="table-avatar">
-
-                            {getInitial(
-                              item.full_name
-                            )}
-
-                          </div>
-
-                          <strong>
-                            {item.full_name}
-                          </strong>
-
-                        </div>
-
-                      </td>
-
-
-                      {/* EMAIL */}
-
-                      <td>
-                        {item.email}
-                      </td>
-
-
-                      {/* ROLE */}
-
-                      <td>
-
-                        <span
-                          className={
-                            `role-badge ${item.role}`
-                          }
-                        >
-                          {item.role}
+                    <ul className="cm-meta">
+                      <li><Hash size={16} /><span>User ID {item.id}</span></li>
+                      <li>
+                        <CalendarDays size={16} />
+                        <span>
+                          Joined{" "}
+                          {item.created_at
+                            ? new Date(item.created_at).toLocaleDateString()
+                            : "-"}
                         </span>
+                      </li>
+                    </ul>
 
-                      </td>
+                    <div className="cm-actions">
 
+                      <button
+                        className="cm-btn edit"
+                        title="Edit user"
+                        onClick={() => openEditModal(item)}
+                      >
+                        <Edit size={15} /> Edit
+                      </button>
 
-                      {/* STATUS */}
+                      <button
+                        className={`cm-btn ${item.is_active ? "warn" : "ok"}`}
+                        title={item.is_active ? "Deactivate user" : "Activate user"}
+                        disabled={statusLoading === item.id}
+                        onClick={() => handleStatusChange(item)}
+                      >
+                        {statusLoading === item.id ? (
+                          <div className="small-spinner"></div>
+                        ) : item.is_active ? (
+                          <UserX size={15} />
+                        ) : (
+                          <UserCheck size={15} />
+                        )}
+                      </button>
 
-                      <td>
+                      <button
+                        className="cm-btn delete"
+                        title="Delete user"
+                        onClick={() => setDeletingUser(item)}
+                      >
+                        <Trash2 size={15} />
+                      </button>
 
-                        <span
-                          className={
-                            `status-badge ${item.is_active
-                              ? "active"
-                              : "inactive"
-                            }`
-                          }
-                        >
-                          {item.is_active
-                            ? "Active"
-                            : "Inactive"}
-                        </span>
+                    </div>
 
-                      </td>
+                  </div>
 
+                </div>
 
-                      {/* CREATED */}
-
-                      <td>
-
-                        {new Date(
-                          item.created_at
-                        ).toLocaleDateString()}
-
-                      </td>
-
-
-                      {/* ACTIONS */}
-
-                      <td>
-
-                        <div className="user-actions">
-
-                          {/* EDIT */}
-
-                          <button
-                            className="action-button edit"
-                            title="Edit user"
-                            onClick={() =>
-                              openEditModal(item)
-                            }
-                          >
-                            <Edit size={15} />
-                          </button>
-
-
-                          {/* ACTIVATE / DEACTIVATE */}
-
-                          <button
-                            className={
-                              `action-button ${item.is_active
-                                ? "deactivate"
-                                : "activate"
-                              }`
-                            }
-                            title={
-                              item.is_active
-                                ? "Deactivate user"
-                                : "Activate user"
-                            }
-                            disabled={
-                              statusLoading ===
-                              item.id
-                            }
-                            onClick={() =>
-                              handleStatusChange(item)
-                            }
-                          >
-
-                            {statusLoading === item.id ? (
-
-                              <div className="small-spinner"></div>
-
-                            ) : item.is_active ? (
-
-                              <UserX size={15} />
-
-                            ) : (
-
-                              <UserCheck size={15} />
-
-                            )}
-
-                          </button>
-
-
-                          {/* DELETE */}
-
-                          <button
-                            className="action-button delete"
-                            title="Delete user"
-                            onClick={() =>
-                              setDeletingUser(item)
-                            }
-                          >
-                            <Trash2 size={15} />
-                          </button>
-
-                        </div>
-
-                      </td>
-
-                    </tr>
-
-                  ))}
-
-                </tbody>
-
-              </table>
+              ))}
 
             </div>
-
 
             {/* PAGINATION */}
 

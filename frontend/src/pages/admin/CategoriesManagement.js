@@ -10,7 +10,8 @@ import {
   Plus,
   Edit,
   Trash2,
-  Tags
+  Tags,
+  CalendarDays
 } from "lucide-react";
 
 import "./CategoriesManagement.css";
@@ -784,12 +785,12 @@ function CategoriesManagement() {
 
       {/* CATEGORY TABLE */}
 
-      <div className="category-table-card">
+      <div className="category-cards-area">
 
 
         {loading ? (
 
-          <div className="category-loading">
+          <div className="cm-state">
 
             <div className="category-spinner"></div>
 
@@ -801,9 +802,9 @@ function CategoriesManagement() {
 
         ) : categories.length === 0 ? (
 
-          <div className="category-empty">
+          <div className="cm-state">
 
-            <div className="category-empty-icon">
+            <div className="cm-state-icon">
               <Tags size={28} />
             </div>
 
@@ -837,166 +838,81 @@ function CategoriesManagement() {
           <>
 
 
-            <div className="category-table-wrapper">
+            <div className="cm-grid">
 
-              <table className="category-table">
+              {currentCategories.map((category, index) => (
 
-                <thead>
+                <div
+                  className="cm-card"
+                  key={category.id}
+                  style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
+                >
 
-                  <tr>
+                  <div className={`cm-media grad-${(startIndex + index) % 3}`}>
 
-                    <th>
-                      #
-                    </th>
+                    <span className="cm-tag">
+                      #{startIndex + index + 1}
+                    </span>
 
-                    <th>
-                      Category
-                    </th>
+                    <div className="cm-glyph">
+                      <Tags size={30} />
+                    </div>
 
-                    <th>
-                      Description
-                    </th>
+                  </div>
 
-                    <th>
-                      Created
-                    </th>
+                  <div className="cm-body">
 
-                    <th>
-                      Actions
-                    </th>
+                    <h3 title={category.name}>{category.name}</h3>
 
-                  </tr>
+                    <p className="cm-sub">
+                      {category.description || "No description added."}
+                    </p>
 
-                </thead>
-
-
-                <tbody>
-
-                  {currentCategories.map(
-                    (
-                      category,
-                      index
-                    ) => (
-
-                      <tr
-                        key={
-                          category.id
-                        }
-                      >
-
-                        <td>
-                          {startIndex +
-                            index +
-                            1}
-                        </td>
-
-
-                        <td>
-
-                          <div className="category-name-cell">
-
-                            <div className="category-icon">
-
-                              <Tags
-                                size={16}
-                              />
-
-                            </div>
-
-                            <strong>
-                              {
-                                category.name
-                              }
-                            </strong>
-
-                          </div>
-
-                        </td>
-
-
-                        <td>
-
-                          <span className="category-description">
-
-                            {
-                              category.description ||
-                              "No description"
-                            }
-
-                          </span>
-
-                        </td>
-
-
-                        <td>
-
+                    <ul className="cm-meta">
+                      <li>
+                        <CalendarDays size={16} />
+                        <span>
+                          Created{" "}
                           {category.created_at
-                            ? new Date(
-                                category.created_at
-                              ).toLocaleDateString()
+                            ? new Date(category.created_at).toLocaleDateString()
                             : "-"}
+                        </span>
+                      </li>
+                    </ul>
 
-                        </td>
+                    <div className="cm-actions">
 
+                      <button
+                        className="cm-btn edit"
+                        title="Edit category"
+                        onClick={() => openEditModal(category)}
+                      >
+                        <Edit size={15} /> Edit
+                      </button>
 
-                        <td>
+                      <button
+                        className="cm-btn delete"
+                        title="Delete category"
+                        onClick={() => openDeleteModal(category)}
+                      >
+                        <Trash2 size={15} /> Delete
+                      </button>
 
-                          <div className="category-actions">
+                    </div>
 
-                            <button
-                              className="category-edit-button"
-                              onClick={() =>
-                                openEditModal(
-                                  category
-                                )
-                              }
-                              title="Edit category"
-                            >
+                  </div>
 
-                              <Edit
-                                size={15}
-                              />
+                </div>
 
-                            </button>
-
-
-                            <button
-                              className="category-delete-button"
-                              onClick={() =>
-                                openDeleteModal(
-                                  category
-                                )
-                              }
-                              title="Delete category"
-                            >
-
-                              <Trash2
-                                size={15}
-                              />
-
-                            </button>
-
-                          </div>
-
-                        </td>
-
-                      </tr>
-
-                    )
-                  )}
-
-                </tbody>
-
-              </table>
+              ))}
 
             </div>
-
 
             {/* PAGINATION */}
 
             {totalPages > 1 && (
 
-              <div className="category-pagination">
+              <div className="cm-pagination">
 
                 <button
                   disabled={

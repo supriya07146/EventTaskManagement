@@ -13,7 +13,8 @@ import {
   CalendarDays,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  Mail
 } from "lucide-react";
 
 import "./RegistrationsManagement.css";
@@ -858,11 +859,11 @@ function RegistrationsManagement() {
 
       {/* TABLE */}
 
-      <div className="registration-table-card">
+      <div className="registration-cards-area">
 
         {loading ? (
 
-          <div className="registration-loading">
+          <div className="cm-state">
 
             <div className="registration-spinner"></div>
 
@@ -874,9 +875,9 @@ function RegistrationsManagement() {
 
         ) : registrations.length === 0 ? (
 
-          <div className="registration-empty">
+          <div className="cm-state">
 
-            <div className="registration-empty-icon">
+            <div className="cm-state-icon">
 
               <ClipboardList
                 size={28}
@@ -899,204 +900,98 @@ function RegistrationsManagement() {
 
           <>
 
-            <div className="registration-table-wrapper">
+            <div className="cm-grid">
 
-              <table className="registration-table">
+              {currentRegistrations.map((registration, index) => (
 
-                <thead>
+                <div
+                  className="cm-card"
+                  key={registration.id}
+                  style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
+                >
 
-                  <tr>
+                  <div
+                    className={`cm-media ${
+                      registration.status === "approved"
+                        ? "grad-2"
+                        : registration.status === "rejected"
+                          ? "grad-1"
+                          : registration.status === "cancelled"
+                            ? "grad-off"
+                            : "grad-0"
+                    }`}
+                  >
 
-                    <th>
-                      #
-                    </th>
+                    <span className="cm-tag">
+                      #{startIndex + index + 1}
+                    </span>
 
-                    <th>
-                      User
-                    </th>
+                    <span className={`cm-badge ${registration.status}`}>
+                      {registration.status}
+                    </span>
 
-                    <th>
-                      Event
-                    </th>
+                    <div className="cm-glyph">
+                      <ClipboardList size={30} />
+                    </div>
 
-                    <th>
-                      Registered
-                    </th>
+                  </div>
 
-                    <th>
-                      Status
-                    </th>
+                  <div className="cm-body">
 
-                    <th>
-                      Actions
-                    </th>
+                    <h3 title={registration.event_title}>
+                      {registration.event_title}
+                    </h3>
 
-                  </tr>
+                    <p className="cm-sub">
+                      Registration for this event.
+                    </p>
 
-                </thead>
-
-
-                <tbody>
-
-                  {currentRegistrations.map(
-                    (
-                      registration,
-                      index
-                    ) => (
-
-                      <tr
-                        key={
-                          registration.id
-                        }
-                      >
-
-                        <td>
-                          {startIndex +
-                            index +
-                            1}
-                        </td>
-
-
-                        {/* USER */}
-
-                        <td>
-
-                          <div className="registration-user-cell">
-
-                            <div className="registration-user-icon">
-
-                              <User
-                                size={15}
-                              />
-
-                            </div>
-
-                            <div>
-
-                              <strong>
-                                {
-                                  registration.user_name
-                                }
-                              </strong>
-
-                              <small>
-                                {
-                                  registration.user_email
-                                }
-                              </small>
-
-                            </div>
-
-                          </div>
-
-                        </td>
-
-
-                        {/* EVENT */}
-
-                        <td>
-
-                          <div className="registration-event-cell">
-
-                            <CalendarDays
-                              size={15}
-                            />
-
-                            <span>
-                              {
-                                registration.event_title
-                              }
-                            </span>
-
-                          </div>
-
-                        </td>
-
-
-                        {/* DATE */}
-
-                        <td>
-
+                    <ul className="cm-meta">
+                      <li><User size={16} /><span>{registration.user_name}</span></li>
+                      <li><Mail size={16} /><span>{registration.user_email}</span></li>
+                      <li>
+                        <CalendarDays size={16} />
+                        <span>
                           {registration.registered_at
-                            ? new Date(
-                              registration.registered_at
-                            ).toLocaleDateString()
+                            ? new Date(registration.registered_at).toLocaleDateString()
                             : "-"}
+                        </span>
+                      </li>
+                    </ul>
 
-                        </td>
+                    <div className="cm-actions">
 
+                      <button
+                        className="cm-btn view"
+                        title="View details"
+                        onClick={() => openDetails(registration)}
+                      >
+                        <Eye size={15} /> Details
+                      </button>
 
-                        {/* STATUS */}
+                      <button
+                        className="cm-btn ok"
+                        title="Update status"
+                        onClick={() => openStatusModal(registration)}
+                      >
+                        <CheckCircle size={15} /> Status
+                      </button>
 
-                        <td>
+                    </div>
 
-                          {getStatusBadge(
-                            registration.status
-                          )}
+                  </div>
 
-                        </td>
+                </div>
 
-
-                        {/* ACTIONS */}
-
-                        <td>
-
-                          <div className="registration-actions">
-
-                            <button
-                              className="registration-view-button"
-                              onClick={() =>
-                                openDetails(
-                                  registration
-                                )
-                              }
-                              title="View details"
-                            >
-
-                              <Eye
-                                size={15}
-                              />
-
-                            </button>
-
-
-                            <button
-                              className="registration-status-button"
-                              onClick={() =>
-                                openStatusModal(
-                                  registration
-                                )
-                              }
-                              title="Update status"
-                            >
-
-                              <CheckCircle
-                                size={15}
-                              />
-
-                            </button>
-
-                          </div>
-
-                        </td>
-
-                      </tr>
-
-                    )
-                  )}
-
-                </tbody>
-
-              </table>
+              ))}
 
             </div>
-
 
             {/* PAGINATION */}
 
             {totalPages > 1 && (
 
-              <div className="registration-pagination">
+              <div className="cm-pagination">
 
                 <button
                   disabled={

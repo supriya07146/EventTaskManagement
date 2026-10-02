@@ -50,7 +50,8 @@ def event_list(request):
 
         serializer = EventSerializer(
             events,
-            many=True
+            many=True,
+            context={"request": request}
         )
 
         return Response(
@@ -70,7 +71,8 @@ def event_list(request):
         )
 
     serializer = EventSerializer(
-        data=request.data
+        data=request.data,
+        context={"request": request}
     )
 
     if serializer.is_valid():
@@ -87,7 +89,10 @@ def event_list(request):
         )
 
         return Response(
-            EventSerializer(event).data,
+            EventSerializer(
+                event,
+                context={"request": request}
+            ).data,
             status=status.HTTP_201_CREATED
         )
 
@@ -133,7 +138,8 @@ def event_detail(request, pk):
     if request.method == "GET":
 
         serializer = EventSerializer(
-            event
+            event,
+            context={"request": request}
         )
 
         return Response(
@@ -163,7 +169,8 @@ def event_detail(request, pk):
         serializer = EventSerializer(
             event,
             data=request.data,
-            partial=True
+            partial=True,
+            context={"request": request}
         )
 
         if serializer.is_valid():
@@ -200,7 +207,8 @@ def event_detail(request, pk):
 
             return Response(
                 EventSerializer(
-                    updated_event
+                    updated_event,
+                    context={"request": request}
                 ).data,
                 status=status.HTTP_200_OK
             )

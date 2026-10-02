@@ -35,6 +35,12 @@ class Event(models.Model):
         default=100
     )
 
+    image = models.ImageField(
+        upload_to="event_images/",
+        blank=True,
+        null=True
+    )
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
